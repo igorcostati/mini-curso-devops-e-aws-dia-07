@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: consumer
+  name: consumer
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer 
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      containers:
+      - image: 273444517440.dkr.ecr.us-east-1.amazonaws.com/labs-dvn-repo/strimzi/consumer:v2.0
+        name: consumer 
