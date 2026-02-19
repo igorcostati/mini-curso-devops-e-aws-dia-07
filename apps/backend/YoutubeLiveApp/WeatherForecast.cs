@@ -10,4 +10,5 @@ public class WeatherForecast
 
     public string? Summary { get; set; }
     public string Deployment {get;set;}
+    public string PodName {get;set;}
 }
