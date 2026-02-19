@@ -3,17 +3,20 @@ resource "aws_iam_role" "github" {
 
   assume_role_policy = jsonencode({
     Statement = [{
-      Action = "sts:AssumeRole"
+      Action = "sts:AssumeRoleWithWebIdentity"
       Effect = "Allow"
       Principal = {
         Federated = aws_iam_openid_connect_provider.github.arn
       }
       Condition = {
         StringEquals = {
-          "token.actions.githubusercontent.com:sub" = "sts.amazonaws.com"
+          "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
         }
         StringLike = {
-          "token.actions.githubusercontent.com:aud" = "repo:igorcostati/mini-curso-devops-e-aws-dia*"
+          "token.actions.githubusercontent.com:sub" = [
+            "repo:igorcostati/mini-curso-devops-e-aws-dia-07:ref:refs/heads/main",
+            "repo:igorcostati/mini-curso-devops-e-aws-dia-07:environment:prod"
+          ]
         }
       }
     }]

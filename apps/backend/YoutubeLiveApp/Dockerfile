@@ -3,7 +3,7 @@ WORKDIR /youtube-live-app
 COPY . .
 ENV ASPNETCORE_ENVIRONMENT Development
 ENV URLS http://0.0.0.0:80
-RUN dotnet publish -c Release -o build YoutubeLiveApp/YoutubeLiveApp.csproj
+RUN dotnet publish -c Release -o build YoutubeLiveApp.csproj
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine AS runner
 WORKDIR /youtube-live-app
