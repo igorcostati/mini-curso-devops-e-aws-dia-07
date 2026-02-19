@@ -16,7 +16,7 @@ jobs:
   backend:
     name: Backend Job
     runs-on: ubuntu-latest
-    environment: labs-dvn-mini-curso-devops-e-aws
+    environment: prod
     steps:
       - uses: actions/checkout@v4
 
