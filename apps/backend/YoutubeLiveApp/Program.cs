@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Youtube Live App Backend API - teste 2",
+        Title = "Youtube Live App Backend API - teste 3cd",
         Version = "v1"
     });
 });
