@@ -35,15 +35,14 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker build -t $REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG .
+          docker build -f ./apps/backend/YoutubeLiveApp/Dockerfile -t $REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG ./apps/backend/YoutubeLiveApp
           docker push $REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG
-      - uses: actions/checkout@v6
+      
+      - name: Checkout GitOps
+        uses: actions/checkout@v6
         with:
           repository: "igorcostati/mini-curso-devops-e-aws-dia-07-gitops"
-          ref: main
           token: ${{ secrets.PAT }}
-          path: gitops
-          persist-credentials: false
 
       - name: Kustomize edit image
         working-directory: ./gitops
@@ -51,9 +50,13 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           kustomize edit set image backend=$REGISTRY/$BACKEND_REPOSITORY=$REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG
+    
+      - name: Commit and push changes
+        env:        
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/igorcostati/mini-curso-devops-e-aws-dia-07-gitops.git
           git add ./kustomization.yml
-          git commit -m "[NewImage] $REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG"
-          git push origin HEAD:main
+          git commit -m "[BOT] Update backend image to $REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG"
+          git push
