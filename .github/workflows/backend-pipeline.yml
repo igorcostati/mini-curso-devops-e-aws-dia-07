@@ -1,0 +1,53 @@
+name: Backend Pipeline
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/backend/**"
+env:
+  IMAGE_TAG: ${{ github.sha }}
+  BACKEND_REPOSITORY: labs-dvn-repo/dev/backend
+permissions:
+  id-token: write 
+  contents: read 
+jobs:
+  backend:
+    name: Backend Job
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6.0.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{vars.AWS_ROLE_TO_ASSUME_ARN}}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        working-directory: ./apps/backend/YoutubeLiveApp
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker build -t $REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG
+      - uses: actions/checkout@v6
+        with:
+          repository: "igorcostati/mini-curso-devops-e-aws-dia-07-gitops"
+          token: ${{ secrets.PAT }}
+
+      - name: Kustomize edit image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          kustomize edit set image backend=$REGISTRY/$BACKEND_REPOSITORY=$REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ./kustomization.yml
+          git commit -m "[NewImage] $REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG"
+          git push

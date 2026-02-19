@@ -4,7 +4,7 @@ resource "aws_s3_bucket" "this" {
   tags = {
     Name        = "labs-devops-na-nuvem.tecnologia-i.com.br"
     Environment = "Dev"
-    Teste = "Teste"
+    Teste       = "Teste"
   }
 }
 
