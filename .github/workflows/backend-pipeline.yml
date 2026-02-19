@@ -43,6 +43,7 @@ jobs:
         with:
           repository: "igorcostati/mini-curso-devops-e-aws-dia-07-gitops"
           token: ${{ secrets.PAT }}
+          path: gitops
 
       - name: Kustomize edit image
         working-directory: ./gitops
@@ -52,6 +53,7 @@ jobs:
           kustomize edit set image backend=$REGISTRY/$BACKEND_REPOSITORY=$REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG
     
       - name: Commit and push changes
+        working-directory: ./gitops
         env:        
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
