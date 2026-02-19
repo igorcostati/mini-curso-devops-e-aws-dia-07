@@ -209,3 +209,9 @@ terraform apply -var="enable_karpenter=false" -auto-approve
 # Destruir tudo
 terraform destroy
 ```
+
+``` bash
+
+#instalar o ArgoCD https://argo-cd.readthedocs.io/en/stable/getting_started/
+
+```
