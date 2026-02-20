@@ -7,7 +7,7 @@
     region: "us-east-1"
     eks_cluster: "labs-dvn-mini-curso-devops-e-aws-eks-cluster"
     aws_account_id: "273444517440" 
-    vpcId: "vpc-021e5b80a9908b641" 
+    vpcId: "vpc-0c4e113177f9c8488" 
   tasks:
     - name: Download IAM Policy
       shell: |
